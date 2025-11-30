@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cliente-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cliente-service
+  template:
+    metadata:
+      labels:
+        app: cliente-service
+    spec:
+      containers:
+        - name: cliente-service
+          image: seuusuario/cliente-service:1.0
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/microsservicos_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cliente-service
+spec:
+  selector:
+    app: cliente-service
+  ports:
+    - port: 8081
+      targetPort: 8081
+  type: ClusterIP
